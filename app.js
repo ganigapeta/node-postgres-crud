@@ -26,7 +26,9 @@ app.use(
   })
 );
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
+// app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static('uploads'));
 
 const port = process.env.PORT || 3000;
 
@@ -35,5 +37,6 @@ app.listen(port, () => {
 });
 
 require('./app/routes/auth.routes.js')(app);
-require('./app/routes/task.routes.js')(app);
+require('./app/routes/movie.routes.js')(app);
+require('./app/routes/fileupload.routes.js')(app);
 

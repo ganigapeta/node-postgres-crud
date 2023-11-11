@@ -1,10 +1,17 @@
 var pool = require('../../config/db.config');
 
 exports.create = async (req, res) => {
-    const { description } = req.body;
+    const { name, crew_ids, artist_ids, ratings, created_by } = req.body;
     try {
-        const newTask = await pool.query('INSERT INTO tasks (description) VALUES ($1) RETURNING *', [description]);
-        res.json(newTask.rows[0]);
+        const newMovie = await pool.query('INSERT INTO movies (name, crew_ids, artist_ids, ratings, created_date, created_by) VALUES ($1, $2, $3, $4, NOW(), $5) RETURNING *',
+             [
+                name,
+                crew_ids,
+                artist_ids,
+                ratings,
+                created_by
+            ]);
+        res.json(newMovie.rows[0]);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });
@@ -13,7 +20,7 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
     try {
-        const tasks = await pool.query('SELECT * FROM tasks');
+        const tasks = await pool.query('SELECT * FROM movies');
         res.json(tasks.rows);
     } catch (error) {
         console.error(error);
@@ -21,7 +28,15 @@ exports.findAll = async (req, res) => {
     }
 };
 
-exports.findOne = function (req, res) {
+exports.findOne = async function (req, res) {
+    const { id } = req.params;
+    try {
+        const tasks = await pool.query('SELECT * FROM movies WHERE id = $1', [id]);
+        res.json(tasks.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+    }
 };
 
 exports.update = async (req, res) => {

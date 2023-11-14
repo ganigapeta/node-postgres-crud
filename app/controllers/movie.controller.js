@@ -1,19 +1,19 @@
 var pool = require('../../config/db.config');
 
 exports.create = async (req, res) => {
-    const { name, crew_ids, artist_ids, ratings, created_by } = req.body;
+    const { movie_title, description, release_year, rating, image_id, created_by } = req.body;
     try {
-        const newMovie = await pool.query('INSERT INTO movies (name, crew_ids, artist_ids, ratings, created_date, created_by) VALUES ($1, $2, $3, $4, NOW(), $5) RETURNING *',
+        const newMovie = await pool.query('INSERT INTO movies (movie_title, description, release_year, rating, image_id, created_by, created_date) VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *',
              [
-                name,
-                crew_ids,
-                artist_ids,
-                ratings,
+                movie_title,
+                description,
+                release_year,
+                rating,
+                image_id,
                 created_by
             ]);
         res.json(newMovie.rows[0]);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Server error' });
     }
 };

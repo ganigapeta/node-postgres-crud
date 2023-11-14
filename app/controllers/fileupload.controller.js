@@ -7,7 +7,7 @@ exports.simpleFileUpload = async (req, res) => {
         response += `<img src="${req.file.path}" /><br>`;
         // return res.send(response)
         // Insert the image into the PostgreSQL database
-        const result = await pool.query('INSERT INTO images (src) VALUES($1) RETURNING id', [req.file.path]);
+        const result = await pool.query('INSERT INTO movie_images (src) VALUES($1) RETURNING id', [req.file.path]);
 
         res.status(201).json({ id: result.rows[0].id });
     } catch (error) {
@@ -20,7 +20,7 @@ exports.getImageById = async (req, res) => {
     const imageId = req.params.Id;
     try {
         // Retrieve the image from the database
-        const result = await pool.query('SELECT src FROM images WHERE id = $1', [imageId]);
+        const result = await pool.query('SELECT src FROM movie_images WHERE id = $1', [imageId]);
 
         if (result.rows.length === 0) {
             res.status(404).send('Image not found');
